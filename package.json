@@ -10,9 +10,10 @@
     "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
-    "@auth0/nextjs-auth0": "^3.5.0",
+    "@auth/prisma-adapter": "^2.4.2",
     "@prisma/client": "^5.19.0",
     "next": "14.2.7",
+    "next-auth": "5.0.0-beta.20",
     "react": "^18",
     "react-dom": "^18",
     "ts-node": "^10.9.2"

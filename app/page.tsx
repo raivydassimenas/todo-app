@@ -1,10 +1,17 @@
-import Image from "next/image";
-import Link from "next/link";
+import { auth } from "@/auth";
 
-export default function Home() {
+export default async function Home() {
+  const session = await auth();
+
+  if (!session) {
+    return (
+      <p>
+        You have to sign in
+      </p>
+    );
+  }
+
   return (
-    <main>
-      <Link href="/api/auth/login">Login</Link>
-    </main>
+    <p>This is the main page</p>
   );
 }
