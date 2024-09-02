@@ -1,17 +1,13 @@
-import { auth } from "@/auth";
+import Navbar from '@/components/navbar';
+import { auth, currentUser } from '@clerk/nextjs/server';
 
 export default async function Home() {
-  const session = await auth();
-
-  if (!session) {
-    return (
-      <p>
-        You have to sign in
-      </p>
-    );
-  }
+  const { userId } = auth();
 
   return (
-    <p>This is the main page</p>
-  );
+    <main>
+      {/* <Navbar /> */}
+      {userId ? <p>Welcome</p> : <p>You need to sign in</p>}
+    </main>
+  )
 }

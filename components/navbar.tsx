@@ -1,15 +1,13 @@
-import SignIn from "@/components/sign-in";
-import SignOut from "@/components/sign-out";
-
-import { auth } from "@/auth";
-
+import { auth, currentUser } from '@clerk/nextjs/server';
+import SignIn from './sign-in';
+import SignOut from "./sign-out";
 
 export default async function Navbar() {
-  const session = await auth();
+  const { userId } = auth();
 
   return (
     <nav>
-      {session ? <SignOut /> : <SignIn />}
+      {userId ? <SignOut /> : <SignIn />}
     </nav>
   );
 };
