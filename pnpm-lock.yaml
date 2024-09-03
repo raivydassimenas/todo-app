@@ -11,6 +11,9 @@ importers:
       '@auth/prisma-adapter':
         specifier: ^2.4.2
         version: 2.4.2(@prisma/client@5.19.0(prisma@5.19.0))
+      '@neondatabase/serverless':
+        specifier: ^0.9.5
+        version: 0.9.5
       '@prisma/adapter-neon':
         specifier: ^5.19.1
         version: 5.19.1(@neondatabase/serverless@0.9.5)
