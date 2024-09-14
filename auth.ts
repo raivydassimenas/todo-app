@@ -23,13 +23,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       async authorize(credentials) {
         const user = await prisma.user.findFirst({
           where: {
-            email: credentials.email,
+            email: credentials.email as string,
           },
         });
         if (!user) {
           throw new Error("No user found");
         }
-        const comp = await bcrypt.compare(credentials.password, user.password);
+        const comp = await bcrypt.compare(credentials.password as string, user.password as string);
         if (comp) {
           return user;
         } else {
@@ -38,4 +38,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
+  pages: {
+    signIn: "/login",
+    signUp: "/signup",
+  },
 });
