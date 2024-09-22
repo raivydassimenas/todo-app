@@ -15,8 +15,12 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { signupSchema } from "@/lib/schemas";
+import { signIn } from "@/auth";
+import { useRouter } from "next/navigation";
 
 export default function SignupForm(): any {
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof signupSchema>>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
@@ -25,8 +29,23 @@ export default function SignupForm(): any {
     }
   });
 
-  function signup(values: z.infer<typeof signupSchema>) {
-    console.log(values);
+  async function signup(values: z.infer<typeof signupSchema>) {
+    try {
+      const result = await signIn("credentials", {
+        email: values.email,
+        password: values.password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        console.log(result.error);
+      } else {
+        router.push("/");
+      }
+      
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

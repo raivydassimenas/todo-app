@@ -4,6 +4,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/prisma";
 import bcrypt from "bcryptjs";
 
+
 declare module "next-auth" {
   interface Session {
     user: {
@@ -26,11 +27,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             email: credentials.email as string,
           },
         });
+
         if (!user) {
           throw new Error("No user found");
         }
-        const comp = await bcrypt.compare(credentials.password as string, user.password as string);
+
+        const comp = await bcrypt.compare(credentials.password as string, (user as any).password);
         if (comp) {
+          // Remove the password from the user object before returning
           return user;
         } else {
           throw new Error("Password does not match");
@@ -40,6 +44,5 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   pages: {
     signIn: "/login",
-    signUp: "/signup",
   },
 });
