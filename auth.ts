@@ -46,3 +46,29 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     signIn: "/login",
   },
 });
+
+export async function createUser(email: string, password: string) {
+  // Check if user already exists
+  const existingUser = await prisma.user.findUnique({
+    where: { email },
+  });
+
+  if (existingUser) {
+    throw new Error("User already exists");
+  }
+
+  // Hash the password
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  // Create the user
+  const user = await prisma.user.create({
+    data: {
+      email,
+      password:hashedPassword, // Changed from password: hashedPassword
+    },
+  });
+
+  // Return the user without the password
+  const { password: _, ...userWithoutPassword } = user;
+  return userWithoutPassword;
+}

@@ -4,7 +4,7 @@ export default async function Home() {
 
   return (
     <main>
-      {/* <Navbar /> */}
+      <p>Hello World</p>
     </main>
   )
 }

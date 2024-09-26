@@ -15,10 +15,9 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { signupSchema } from "@/lib/schemas";
-import { signIn } from "@/auth";
 import { useRouter } from "next/navigation";
 
-export default function SignupForm(): any {
+export default function SignupForm(): JSX.Element {
   const router = useRouter();
 
   const form = useForm<z.infer<typeof signupSchema>>({
@@ -26,25 +25,30 @@ export default function SignupForm(): any {
     defaultValues: {
       email: "",
       password: "",
+      confirmPassword: "",
     }
   });
 
   async function signup(values: z.infer<typeof signupSchema>) {
     try {
-      const result = await signIn("credentials", {
-        email: values.email,
-        password: values.password,
-        redirect: false,
+      const response = await fetch('/api/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
       });
 
-      if (result?.error) {
-        console.log(result.error);
+      if (response.ok) {
+        router.push("/login"); // Redirect to login page on success
       } else {
-        router.push("/");
+        const errorData = await response.json();
+        console.error(errorData.error);
+        // Handle error (e.g., show error message to user)
       }
-      
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      // Handle error (e.g., show error message to user)
     }
   };
 
