@@ -15,12 +15,14 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { loginSchema } from "@/lib/schemas";
-import { signIn } from "@/auth";
-import { redirect, useRouter } from "next/navigation";
-import { login } from "./actions";
+import { signIn } from "next-auth/react"; // Add this import
+import {  useRouter } from "next/navigation";
+import { useState } from "react"; // Add this import
 
 export default function LoginForm(): JSX.Element {
   const router = useRouter();
+  const [error, setError] = useState<string | null>(null); // Add this line
+
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -30,16 +32,28 @@ export default function LoginForm(): JSX.Element {
   });
 
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
-    const result = await login(values);
-    if (result?.error) {
-      // Handle error (e.g., show an alert or set an error state)
-      console.error(result.error);
+    try {
+      const result = await signIn("credentials", {
+        redirect: false,
+        email: values.email,
+        password: values.password,
+      });
+
+      if (result?.error) {
+        setError(result.error);
+      } else {
+        router.push("/"); // Redirect to dashboard or home page
+      }
+    } catch (error) {
+      console.error("An unexpected error occurred:", error);
+      setError("An unexpected error occurred. Please try again.");
     }
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        {error && <div className="text-red-500 mb-4">{error}</div>}
         <FormField
           control={form.control}
           name="email"
