@@ -15,7 +15,8 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { loginSchema } from "@/lib/schemas";
-import { login } from "./actions"; // Update this import
+// import { login } from "./actions"; // Update this import
+// import { signIn } from "@/auth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -23,21 +24,43 @@ export default function LoginForm(): JSX.Element {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
 
+  // const form = useForm<z.infer<typeof loginSchema>>({
+  //   resolver: zodResolver(loginSchema),
+  //   defaultValues: {
+  //     email: "",
+  //     password: "",
+  //   }
+  // });
+
+  // const onSubmit = async (values: z.infer<typeof loginSchema>) => {
+  //   const result = await login(values); // Call the login function
+
+  //   if (result?.error) {
+  //     setError(result.error); // Set error if login fails
+  //   } else {
+  //     router.push("/"); // Redirect to dashboard or home page
+  //   }
+  // };
+
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
-    }
+    },
   });
 
-  const onSubmit = async (values: z.infer<typeof loginSchema>) => {
-    const result = await login(values); // Call the login function
+  const onSubmit = async (data: z.infer<typeof loginSchema>) => {
+    const result = await signIn("credentials", {
+      redirect: false,
+      email: data.email,
+      password: data.password,
+    });
 
     if (result?.error) {
-      setError(result.error); // Set error if login fails
+      setError(result.error);
     } else {
-      router.push("/"); // Redirect to dashboard or home page
+      router.push("/dashboard");
     }
   };
 

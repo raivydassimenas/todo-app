@@ -25,6 +25,8 @@ export async function login(values: z.infer<typeof loginSchema>) {
       redirect: false,
     });
 
+    console.log("logged in");
+
     if (result?.error) {
       console.log(result.error);
       return { error: result.error };
